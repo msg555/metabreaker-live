@@ -1,0 +1,7 @@
+*.pyc
+*.swo
+*.swp
+cache
+.venv
+.wrangler
+.r2access

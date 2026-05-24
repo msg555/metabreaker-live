@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tournament Leaderboard</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { height: 100%; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f2f5;
+            color: #222;
+            padding: 24px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .title-row {
+            display: flex;
+            flex-direction: row;
+            align-items: baseline;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .home-link {
+            font-size: 1.2rem;
+            line-height: 1;
+            text-decoration: none;
+            color: #555;
+        }
+
+        .home-link:hover { color: #1a1a2e; }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            white-space: nowrap;
+        }
+
+        #page-links {
+            line-height: 1;
+        }
+
+        #page-links a {
+            display: inline-block;
+            margin-right: 8px;
+            padding: 4px 12px;
+            border-radius: 6px;
+            background: white;
+            border: 1px solid #c8d4e8;
+            color: #1e3a5f;
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        #page-links a:hover {
+            background: #e8eef7;
+        }
+
+        .controls {
+            background: white;
+            border-radius: 10px;
+            padding: 16px 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .divider { width: 1px; height: 24px; background: #e0e0e0; }
+
+        .group-label { font-weight: 600; font-size: 0.85rem; color: #555; white-space: nowrap; }
+
+        input[type="text"] {
+            padding: 7px 12px;
+            border: 1.5px solid #d0d0d0;
+            border-radius: 6px;
+            font-size: 0.88rem;
+            width: 220px;
+        }
+
+        input[type="text"]:focus { outline: none; border-color: #1a73e8; }
+
+        .col-dropdown {
+            position: relative;
+        }
+
+        .col-dropdown-btn {
+            padding: 7px 12px;
+            border: 1.5px solid #d0d0d0;
+            border-radius: 6px;
+            background: white;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #333;
+            cursor: pointer;
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        .col-dropdown-btn:hover { background: #f5f5f5; }
+
+        .fav-only-btn {
+            padding: 7px 12px;
+            border: 1.5px solid #d0d0d0;
+            border-radius: 6px;
+            background: white;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #333;
+            cursor: pointer;
+            user-select: none;
+            white-space: nowrap;
+        }
+        .fav-only-btn:hover { background: #f5f5f5; }
+        .fav-only-btn.active { background: #fff4d4; border-color: #f5b800; color: #5a4000; }
+        .fav-only-btn .star { margin-right: 4px; color: #888; }
+        .fav-only-btn.active .star { color: #f5b800; }
+
+        .fav-star {
+            cursor: pointer;
+            margin-right: 6px;
+            color: #d0d0d0;
+            user-select: none;
+            display: inline-block;
+            width: 1em;
+        }
+        .fav-star.is-fav { color: #f5b800; }
+        .fav-star:hover { color: #999; }
+        .fav-star.is-fav:hover { color: #e0a500; }
+
+        .col-dropdown-panel {
+            display: none;
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            z-index: 100;
+            background: white;
+            border: 1px solid #d0d0d0;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            padding: 10px 14px;
+            min-width: 160px;
+        }
+
+        .col-dropdown-panel.open { display: flex; flex-direction: column; gap: 8px; }
+
+        .toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.84rem;
+            color: #333;
+            cursor: pointer;
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        .toggle-label input[type="checkbox"] { cursor: pointer; }
+
+        #error-msg {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef9a9a;
+            border-radius: 8px;
+            padding: 10px 16px;
+            margin-bottom: 16px;
+            font-size: 0.88rem;
+        }
+
+
+        #status-msg {
+            color: #777;
+            font-size: 0.88rem;
+            padding: 4px 4px 12px;
+        }
+
+        #table-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        #table-container {
+            overflow: auto;
+            flex: 1;
+            min-height: 0;
+            max-width: calc(100vw - 48px);
+            overscroll-behavior-x: contain;
+        }
+
+        .lb-table {
+            border-collapse: separate;
+            border-spacing: 0;
+            white-space: nowrap;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            font-size: 0.80rem;
+        }
+
+        .lb-table th, .lb-table td {
+            padding: 6px 10px;
+            border-bottom: 1px solid #e8e8e8;
+            border-right: 1px solid #e8e8e8;
+        }
+
+        .lb-table thead th {
+            background: #1e3a5f;
+            color: white;
+            font-weight: 600;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .lb-table thead th:hover { background: #274d7a; }
+        .lb-table thead th.sorted-asc::after  { content: ' ▲'; font-size: 0.65em; opacity: 0.85; }
+        .lb-table thead th.sorted-desc::after { content: ' ▼'; font-size: 0.65em; opacity: 0.85; }
+
+        /* Sticky player column */
+        .lb-table th.col-player,
+        .lb-table td.col-player {
+            position: sticky;
+            left: 0;
+            z-index: 1;
+        }
+        .lb-table thead th.col-player { z-index: 3; border-right: 2px solid #3d5f8a; }
+        .lb-table td.col-player {
+            background: white;
+            font-weight: 600;
+            max-width: 160px;
+            text-align: left;
+            border-right: 2px solid #c8c8c8;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .lb-table td.col-player a {
+            color: inherit;
+        }
+
+        .lb-table tbody tr:hover td { background: #f0f7ff !important; }
+
+        td.col-rank  { text-align: center; color: #888; font-weight: 600; width: 40px; }
+        td.col-arch  { text-align: left; color: #444; max-width: 140px; overflow: hidden; text-overflow: ellipsis; }
+        td.col-record { text-align: center; font-weight: 700; }
+        td.col-record.pending { font-weight: normal; font-style: italic; }
+        td.col-points { text-align: center; font-weight: 700; }
+        td.col-tb    { text-align: center; color: #555; font-size: 0.78rem; }
+        td.col-range { text-align: center; font-size: 0.78rem; color: #444; }
+        td.col-range.exact { font-weight: 700; }
+        td.col-prob  { text-align: center; font-weight: 600; }
+        td.col-na    { text-align: center; color: #ccc; background: #fafafa !important; }
+
+        .lb-table td.col-arch a {
+            color: inherit;
+        }
+
+        /* Round corners */
+        .lb-table thead th:first-child { border-top-left-radius: 10px; }
+        .lb-table thead th:last-child  { border-top-right-radius: 10px; }
+        .lb-table tbody tr:last-child td:first-child { border-bottom-left-radius: 10px; }
+        .lb-table tbody tr:last-child td:last-child  { border-bottom-right-radius: 10px; }
+
+        @media (max-width: 640px) {
+            body { padding: 12px; }
+            #table-container { max-width: calc(100vw - 24px); }
+            input[type="text"] { width: 160px; }
+            .title-row { flex-wrap: wrap; margin-bottom: 12px; }
+            h1 { font-size: 1.1rem; }
+        }
+
+        /* Match history tooltip */
+        #match-tooltip {
+            position: fixed;
+            z-index: 1000;
+            background: white;
+            border: 1px solid #d0d0d0;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            padding: 6px 10px;
+            font-size: 0.78rem;
+            pointer-events: none;
+            max-height: 70vh;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .tt-row {
+            display: grid;
+            grid-template-columns: 3em 1.2em 2.8em 1fr;
+            gap: 0 6px;
+            padding: 2px 0;
+            white-space: nowrap;
+            align-items: baseline;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .tt-row:last-child { border-bottom: none; }
+        .tt-row.tt-pending { opacity: 0.55; font-style: italic; }
+        .tt-round { color: #999; font-size: 0.75rem; }
+        .tt-result-w { color: #2e7d32; font-weight: 700; }
+        .tt-result-l { color: #c62828; font-weight: 700; }
+        .tt-result-d { color: #777; font-weight: 700; }
+        .tt-result-pending { color: #999; }
+        .tt-games { color: #555; text-align: right; font-variant-numeric: tabular-nums; }
+        .tt-opp { overflow: hidden; text-overflow: ellipsis; }
+        .tt-arch { color: #888; font-style: italic; }
+    </style>
+</head>
+<body>
+    <div class="title-row">
+        <a href="index.html" class="home-link" title="Index">⌂</a>
+        <h1 id="table-title">Tournament Leaderboard</h1>
+        <div id="page-links"></div>
+    </div>
+    <div id="status-msg">Loading…</div>
+    <div id="error-msg" style="display:none"></div>
+
+    <div class="controls" id="controls" style="display:none">
+        <div class="control-group">
+            <label class="group-label" for="filter-input">Filter:</label>
+            <input type="text" id="filter-input" placeholder="Player name or archetype…">
+        </div>
+        <div class="divider"></div>
+        <button class="fav-only-btn" id="fav-only-btn"><span class="star">☆</span>Favorites</button>
+        <div class="divider"></div>
+        <div class="col-dropdown" id="toggle-group" style="display:none">
+            <button class="col-dropdown-btn" id="col-dropdown-btn">Columns ▾</button>
+            <div class="col-dropdown-panel" id="col-toggles"></div>
+        </div>
+    </div>
+
+    <div id="table-area" style="display:none">
+        <div id="table-container"></div>
+        <div id="round-pending-note" style="display:none; margin-top: 0.5em; font-size: 0.8em; color: #666;">* player has pending round results</div>
+    </div>
+    <footer style="margin-top: 1.5em; font-size: 0.78rem; color: #888;">
+      Predicted probabilities and rank range come from Monte Carlo simulation results. They do not represent true probabilities or the real theoretical rank range.
+    </footer>
+    <div id="match-tooltip"></div>
+
+    <script>
+
+    const params = new URLSearchParams(window.location.search);
+    const tournamentId = params.get('id');
+
+    const archLink = document.createElement('a');
+    archLink.href = 'arch_matchup.html' + (tournamentId ? `?id=${encodeURIComponent(tournamentId)}` : '');
+    archLink.textContent = 'Archetype Matchups';
+    document.getElementById('page-links').appendChild(archLink);
+
+    function safePath(id) {
+        return id && /^[a-zA-Z0-9._-]+$/.test(id) ? id : 'default';
+    }
+    const tid = safePath(tournamentId);
+
+    Promise.all([
+        fetch(`data/${tid}.json`).then(r => {
+            if (!r.ok) throw new Error('Could not load tournament data');
+            return r.json();
+        }),
+        fetch(`data/ranks/${tid}.json`).then(r => {
+            if (!r.ok) throw new Error('Could not load ranks data');
+            return r.json();
+        }),
+    ])
+    .then(([tournament, ranks]) => init(tournament, ranks))
+    .catch(err => showError(err.message));
+
+    function showError(msg) {
+        document.getElementById('error-msg').textContent = msg;
+        document.getElementById('error-msg').style.display = 'block';
+        document.getElementById('status-msg').style.display = 'none';
+    }
+
+    // All possible probability columns, in display order
+    const ALL_PROB_COLS = [
+        { key: 'top_1',   label: 'Top 1',   defaultOn: false, tooltip: 'Probability of finishing 1st' },
+        { key: 'top_2',   label: 'Top 2',   defaultOn: false, tooltip: 'Probability of finishing in the top 2' },
+        { key: 'top_4',   label: 'Top 4',   defaultOn: false, tooltip: 'Probability of finishing in the top 4' },
+        { key: 'top_8',   label: 'Top 8',   defaultOn: true,  tooltip: 'Probability of finishing in the top 8' },
+        { key: 'top_16',  label: 'Top 16',  defaultOn: true,  tooltip: 'Probability of finishing in the top 16' },
+        { key: 'top_32',  label: 'Top 32',  defaultOn: true,  tooltip: 'Probability of finishing in the top 32' },
+        { key: 'top_64',  label: 'Top 64',  defaultOn: true,  tooltip: 'Probability of finishing in the top 64' },
+        { key: 'top_128', label: 'Top 128', defaultOn: false, tooltip: 'Probability of finishing in the top 128' },
+        { key: 'top_256', label: 'Top 256', defaultOn: false, tooltip: 'Probability of finishing in the top 256' },
+    ];
+
+    // Optional non-probability columns (always present in data, but toggleable)
+    const EXTRA_TOGGLE_COLS = [
+        { key: 'omw',   label: 'OMW%',  defaultOn: true,  tooltip: 'Opponent Match Win %' },
+        { key: 'gw',    label: 'GW%',   defaultOn: false, tooltip: 'Game Win %' },
+        { key: 'ogw',   label: 'OGW%',  defaultOn: false, tooltip: 'Opponent Game Win %' },
+        { key: 'range', label: 'Range', defaultOn: true,  tooltip: 'Range of final ranks by simulation' },
+    ];
+
+    let sortKey = 'rank';
+    let sortDir = 1;   // 1 = ascending, -1 = descending
+    let filterText = '';
+    let colVisible = {};
+    let rows = [];
+    let availProbCols = [];
+    let hasSimData = false;
+    let showArchCol = false;
+    let hasLimitedRounds = false;
+    let playerMatchHistory = {};
+    let rowOrder = {};
+    let favorites = new Set();
+    let favoritesOnly = false;
+
+    const favStorageKey = `lb-favorites-${tid}`;
+    const favOnlyStorageKey = `lb-favorites-only-${tid}`;
+    function loadFavorites() {
+        try {
+            const raw = localStorage.getItem(favStorageKey);
+            favorites = new Set(raw ? JSON.parse(raw) : []);
+        } catch { favorites = new Set(); }
+        try {
+            favoritesOnly = localStorage.getItem(favOnlyStorageKey) === '1';
+        } catch { favoritesOnly = false; }
+    }
+    function saveFavorites() {
+        try { localStorage.setItem(favStorageKey, JSON.stringify([...favorites])); } catch {}
+    }
+    function saveFavoritesOnly() {
+        try { localStorage.setItem(favOnlyStorageKey, favoritesOnly ? '1' : '0'); } catch {}
+    }
+    function toggleFavorite(pid) {
+        if (favorites.has(pid)) favorites.delete(pid); else favorites.add(pid);
+        saveFavorites();
+        renderTable();
+    }
+
+    function init(tournament, ranks) {
+        const players = tournament.players || {};
+        const title = tournament.title ? tournament.title : 'Tournament Leaderboard';
+        document.title = title;
+        document.getElementById('table-title').textContent = title;
+        if (tournament.source_url) {
+            const a = document.createElement('a');
+            a.href = tournament.source_url;
+            a.textContent = 'Data Source';
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+            document.getElementById('page-links').appendChild(a);
+        }
+
+        hasLimitedRounds = !!(tournament.limited_rounds && tournament.limited_rounds.length > 0);
+        buildMatchHistory(tournament);
+
+        rows = Object.entries(ranks).map(([pid, r]) => {
+            const player = players[pid];
+            return {
+                pid,
+                name:       player ? player.name : pid,
+                player_url: player ? player.url : null,
+                archetype:  player?.deck?.archetype || 'unknown',
+                deck_url:   player?.deck?.url || null,
+                ...r,
+            };
+        });
+
+        // Detect cutoff_N columns from data and prepend them (sorted by N ascending)
+        const cutoffCols = rows.length
+            ? Object.keys(rows[0])
+                .filter(k => k.startsWith('cutoff_'))
+                .sort((a, b) => parseInt(a.split('_')[1]) - parseInt(b.split('_')[1]))
+                .map(k => {
+                    const n = k.split('_')[1];
+                    return { key: k, label: `≥${n} pts`, defaultOn: true, tooltip: `Probability of finishing with at least ${n} points` };
+                })
+            : [];
+
+        // Detect which prob cols actually have data
+        availProbCols = [...cutoffCols, ...ALL_PROB_COLS.filter(c => rows.some(row => row[c.key] != null))];
+        hasSimData = rows.some(r => r.rank_best != null);
+        showArchCol = rows.some(r => r.archetype !== 'unknown');
+
+        // Detect if top_8 is degenerate (every player is 0% or 100%)
+        const top8Col = availProbCols.find(c => c.key === 'top_8');
+        const top8Degenerate = top8Col && rows.every(r => r.top_8 == null || r.top_8 === 0 || r.top_8 === 1);
+
+        // Initialize column visibility
+        const isMobile = window.innerWidth < 640;
+
+        for (const c of EXTRA_TOGGLE_COLS) colVisible[c.key] = !isMobile && c.defaultOn;
+        let firstProbCol = null;
+        for (const c of availProbCols) {
+            if (top8Degenerate) {
+                const show = c.key === 'top_1' || c.key === 'top_2' || c.key === 'top_4';
+                if (show && firstProbCol === null) firstProbCol = c.key;
+                colVisible[c.key] = !isMobile && show;
+            } else {
+                const degenerate = rows.every(r => r[c.key] == null || r[c.key] === 0 || r[c.key] === 1);
+                const show = c.defaultOn && !degenerate;
+                if (show && firstProbCol === null) firstProbCol = c.key;
+                colVisible[c.key] = !isMobile && show;
+            }
+        }
+        if (isMobile && firstProbCol) colVisible[firstProbCol] = true;
+
+        if (!hasSimData) {
+          colVisible['gw'] = true;
+          colVisible['ogw'] = !isMobile;
+        }
+
+        buildToggles();
+        loadFavorites();
+
+        const filterInput = document.getElementById('filter-input');
+        filterText = filterInput.value.toLowerCase();
+        filterInput.addEventListener('input', e => {
+            filterText = e.target.value.toLowerCase();
+            renderTable();
+        });
+
+        const favBtn = document.getElementById('fav-only-btn');
+        favBtn.classList.toggle('active', favoritesOnly);
+        favBtn.querySelector('.star').textContent = favoritesOnly ? '★' : '☆';
+        favBtn.addEventListener('click', () => {
+            favoritesOnly = !favoritesOnly;
+            saveFavoritesOnly();
+            favBtn.classList.toggle('active', favoritesOnly);
+            favBtn.querySelector('.star').textContent = favoritesOnly ? '★' : '☆';
+            renderTable();
+        });
+
+        renderTable();
+
+        document.getElementById('status-msg').hidden = true;
+        document.getElementById('controls').style.display = 'flex';
+        document.getElementById('table-area').style.display = 'flex';
+    }
+
+    function buildToggles() {
+        const container = document.getElementById('col-toggles');
+        container.innerHTML = '';
+
+        // Extra cols (omw/gw/ogw always exist; range only if sim data)
+        const extraCols = EXTRA_TOGGLE_COLS.filter(c => c.key !== 'range' || hasSimData);
+        const allToggle = [...extraCols, ...availProbCols];
+        if (allToggle.length === 0) return;
+
+        for (const col of allToggle) {
+            const lbl = document.createElement('label');
+            lbl.className = 'toggle-label';
+            const cb = document.createElement('input');
+            cb.type = 'checkbox';
+            cb.checked = !!colVisible[col.key];
+            cb.addEventListener('change', () => {
+                colVisible[col.key] = cb.checked;
+                renderTable();
+            });
+            lbl.appendChild(cb);
+            lbl.appendChild(document.createTextNode(col.label));
+            container.appendChild(lbl);
+        }
+
+        document.getElementById('toggle-group').style.display = 'block';
+    }
+
+    document.getElementById('col-dropdown-btn').addEventListener('click', e => {
+        e.stopPropagation();
+        document.getElementById('col-toggles').classList.toggle('open');
+    });
+
+    document.getElementById('col-toggles').addEventListener('click', e => {
+        e.stopPropagation();
+    });
+
+    document.addEventListener('click', () => {
+        document.getElementById('col-toggles').classList.remove('open');
+    });
+
+    function probBgColor(p) {
+        // white (p=0) → green (p=1)
+        const r = Math.round(255 + (80  - 255) * p);
+        const g = Math.round(255 + (185 - 255) * p);
+        const b = Math.round(255 + (80  - 255) * p);
+        return `rgb(${r},${g},${b})`;
+    }
+
+    function probTextColor(p) {
+        return p > 0.55 ? '#1a4a1a' : '#333';
+    }
+
+    function fmtPct(v)  { return v == null ? null : (v * 100).toFixed(1) + '%'; }
+    function fmtTb(v)   { return v == null ? null : (v * 100).toFixed(2) + '%'; }
+
+    function setSort(key) {
+        if (sortKey === key) {
+            sortDir *= -1;
+        } else {
+            sortKey = key;
+            // Text columns sort ascending by default; numeric descending (higher = better)
+            sortDir = (key === 'name' || key === 'archetype') ? 1
+                    : (key === 'rank') ? 1
+                    : -1;
+        }
+        renderTable();
+    }
+
+    function buildMatchHistory(tournament) {
+        const players = tournament.players || {};
+        const limitedSet = new Set(tournament.limited_rounds || []);
+        playerMatchHistory = {};
+        for (const pid of Object.keys(players)) {
+            playerMatchHistory[pid] = [];
+        }
+        for (let roundIdx = 0; roundIdx < (tournament.round_results || []).length; roundIdx++) {
+            const round = tournament.round_results[roundIdx];
+            if (!round || round.length === 0) break;
+            const isLimited = limitedSet.has(roundIdx);
+            for (const rr of round) {
+                const p1 = rr.p1, p2 = rr.p2, g = rr.games;
+                const roundNum = roundIdx + 1;
+                if (!rr.complete) {
+                    if (p2 && playerMatchHistory[p1]) {
+                        const p1Player = players[p1], p2Player = players[p2];
+                        const p2Arch = !isLimited && p2Player?.deck?.archetype && p2Player.deck.archetype !== 'unknown' ? p2Player.deck.archetype : null;
+                        const p1Arch = !isLimited && p1Player?.deck?.archetype && p1Player.deck.archetype !== 'unknown' ? p1Player.deck.archetype : null;
+                        if (playerMatchHistory[p1]) playerMatchHistory[p1].push({ round: roundNum, pending: true, gamesStr: null, opponentName: p2Player ? p2Player.name : p2, archetype: p2Arch, isLimited });
+                        if (playerMatchHistory[p2]) playerMatchHistory[p2].push({ round: roundNum, pending: true, gamesStr: null, opponentName: p1Player ? p1Player.name : p1, archetype: p1Arch, isLimited });
+                    }
+                    continue;
+                }
+                if (!p2) {
+                    if (playerMatchHistory[p1]) {
+                        const forfeit = g[1] === 2;
+                        playerMatchHistory[p1].push({
+                            round: roundNum,
+                            result: forfeit ? 'L' : 'W',
+                            gamesStr: null,
+                            opponentName: null,
+                            forfeit,
+                            archetype: null,
+                            isLimited,
+                        });
+                    }
+                } else {
+                    let r1, r2;
+                    if (g[0] > g[1])      { r1 = 'W'; r2 = 'L'; }
+                    else if (g[1] > g[0]) { r1 = 'L'; r2 = 'W'; }
+                    else                  { r1 = 'D'; r2 = 'D'; }
+                    const p1Player = players[p1], p2Player = players[p2];
+                    const p1Arch = !isLimited && p1Player?.deck?.archetype && p1Player.deck.archetype !== 'unknown' ? p1Player.deck.archetype : null;
+                    const p2Arch = !isLimited && p2Player?.deck?.archetype && p2Player.deck.archetype !== 'unknown' ? p2Player.deck.archetype : null;
+                    if (playerMatchHistory[p1]) {
+                        playerMatchHistory[p1].push({ round: roundNum, result: r1, gamesStr: `${g[0]}-${g[1]}`, opponentName: p2Player ? p2Player.name : p2, archetype: p2Arch, isLimited });
+                    }
+                    if (playerMatchHistory[p2]) {
+                        playerMatchHistory[p2].push({ round: roundNum, result: r2, gamesStr: `${g[1]}-${g[0]}`, opponentName: p1Player ? p1Player.name : p1, archetype: p1Arch, isLimited });
+                    }
+                }
+            }
+        }
+    }
+
+    function showMatchTooltip(e, pid, constructedOnly) {
+        showMatchTooltipForEl(e.currentTarget, pid, constructedOnly);
+    }
+
+    function showMatchTooltipForEl(el, pid, constructedOnly) {
+        let history = playerMatchHistory[pid];
+        if (!history || history.length === 0) return;
+        if (constructedOnly) history = history.filter(m => !m.isLimited);
+        if (history.length === 0) return;
+
+        const tooltip = document.getElementById('match-tooltip');
+        tooltip.innerHTML = '';
+        for (const m of history) {
+            const row = document.createElement('div');
+            row.className = m.pending ? 'tt-row tt-pending' : 'tt-row';
+
+            const rd = document.createElement('span');
+            rd.className = 'tt-round';
+            rd.textContent = `Rd ${m.round}`;
+
+            const res = document.createElement('span');
+            if (m.pending) {
+                res.className = 'tt-result-pending';
+                res.textContent = '?';
+            } else {
+                res.className = m.result === 'W' ? 'tt-result-w' : m.result === 'L' ? 'tt-result-l' : 'tt-result-d';
+                res.textContent = m.result;
+            }
+
+            const gs = document.createElement('span');
+            gs.className = 'tt-games';
+            gs.textContent = m.gamesStr ?? '—';
+
+            const opp = document.createElement('span');
+            opp.className = 'tt-opp';
+            if (m.opponentName === null) {
+                opp.textContent = m.forfeit ? 'Forfeit' : 'Bye';
+                opp.style.cssText = 'color:#999;font-style:italic';
+            } else {
+                opp.textContent = m.opponentName;
+                if (m.archetype) {
+                    const arch = document.createElement('span');
+                    arch.className = 'tt-arch';
+                    arch.textContent = ` (${m.archetype})`;
+                    opp.appendChild(arch);
+                }
+            }
+
+            row.append(rd, res, gs, opp);
+            tooltip.appendChild(row);
+        }
+
+        tooltip.style.display = 'block';
+        const cr = el.getBoundingClientRect();
+        const tr = tooltip.getBoundingClientRect();
+        let left = cr.right + 8, top = cr.top;
+        if (left + tr.width > window.innerWidth - 8) left = cr.left - tr.width - 8;
+        if (top + tr.height > window.innerHeight - 8) top = window.innerHeight - tr.height - 8;
+        tooltip.style.left = Math.max(8, left) + 'px';
+        tooltip.style.top  = Math.max(8, top)  + 'px';
+    }
+
+    function hideMatchTooltip() {
+        document.getElementById('match-tooltip').style.display = 'none';
+    }
+
+    function attachTooltip(td, pid, constructedOnly) {
+        td.addEventListener('mouseenter', e => showMatchTooltip(e, pid, constructedOnly));
+        td.addEventListener('mouseleave', hideMatchTooltip);
+        td.addEventListener('touchstart', e => {
+            e.stopPropagation();
+            const ttip = document.getElementById('match-tooltip');
+            if (ttip.style.display === 'block') {
+                hideMatchTooltip();
+            } else {
+                showMatchTooltipForEl(td, pid, constructedOnly);
+            }
+        }, { passive: true });
+    }
+
+    document.addEventListener('touchstart', hideMatchTooltip);
+
+    function mkTh(label, key, cls, tooltip) {
+        const th = document.createElement('th');
+        th.textContent = label;
+        if (cls) th.className = cls;
+        if (tooltip) th.title = tooltip;
+        if (sortKey === key) th.classList.add(sortDir === 1 ? 'sorted-asc' : 'sorted-desc');
+        th.addEventListener('click', () => setSort(key));
+        return th;
+    }
+
+    function mkTd(cls, content, style, url) {
+        const td = document.createElement('td');
+        td.className = cls;
+        if (content != null) {
+            if (url != null) {
+                const a = document.createElement('a');
+                a.href = url;
+                a.textContent = content;
+                td.appendChild(a);
+            } else {
+                td.textContent = content;
+            }
+            if (cls === 'col-player' || cls === 'col-arch') {
+                td.title = content;
+            }
+        }
+        if (style) Object.assign(td.style, style);
+        return td;
+    }
+
+    function renderTable() {
+        // Filter
+        const visible = rows.filter(row => {
+            if (favoritesOnly && !favorites.has(row.pid)) return false;
+            if (!filterText) return true;
+            return row.name.toLowerCase().includes(filterText) ||
+                   row.archetype.toLowerCase().includes(filterText);
+        });
+
+        // Sort
+        visible.sort((a, b) => {
+            let av = sortKey === 'range' ? a.rank_best : a[sortKey];
+            let bv = sortKey === 'range' ? b.rank_best : b[sortKey];
+            if (av == null && bv == null) return a.rank - b.rank;
+            if (av == null) return 1;
+            if (bv == null) return -1;
+            if (typeof av === 'string') return sortDir * av.localeCompare(bv) || a.rank - b.rank;
+            return sortDir * (av - bv) || a.rank - b.rank;
+        });
+
+        const table = document.createElement('table');
+        table.className = 'lb-table';
+
+        // ── Header ────────────────────────────────────────────────────────────
+        const thead = document.createElement('thead');
+        const hrow  = document.createElement('tr');
+
+        hrow.appendChild(mkTh('#', 'rank', null, 'Current rank'));
+        hrow.appendChild(mkTh('Player', 'name', 'col-player'));
+        if (showArchCol) hrow.appendChild(mkTh('Archetype', 'archetype'));
+        hrow.appendChild(mkTh('Record', 'record', null, 'Match record'));
+        hrow.appendChild(mkTh('Pts', 'points', null, 'Match points'));
+        if (hasLimitedRounds) {
+            hrow.appendChild(mkTh('C.Rec', 'constructed_record', null, 'Constructed record'));
+            hrow.appendChild(mkTh('C.Pts', 'constructed_points', null, 'Constructed points'));
+        }
+        for (const col of [...EXTRA_TOGGLE_COLS, ...availProbCols]) {
+            if (col.key === 'range' && !hasSimData) continue;
+            if (!colVisible[col.key]) continue;
+            hrow.appendChild(mkTh(col.label, col.key, null, col.tooltip));
+        }
+
+        thead.appendChild(hrow);
+        table.appendChild(thead);
+
+        // ── Body ──────────────────────────────────────────────────────────────
+        const tbody = document.createElement('tbody');
+
+        for (const row of visible) {
+            const tr = document.createElement('tr');
+
+            tr.appendChild(mkTd('col-rank',   row.rank));
+            {
+                const td = document.createElement('td');
+                td.className = 'col-player';
+                td.title = row.name;
+                const isFav = favorites.has(row.pid);
+                const star = document.createElement('span');
+                star.className = 'fav-star' + (isFav ? ' is-fav' : '');
+                star.textContent = isFav ? '★' : '☆';
+                star.addEventListener('click', e => { e.stopPropagation(); toggleFavorite(row.pid); });
+                td.appendChild(star);
+                if (row.player_url) {
+                    const a = document.createElement('a');
+                    a.href = row.player_url;
+                    a.textContent = row.name;
+                    td.appendChild(a);
+                } else {
+                    td.appendChild(document.createTextNode(row.name));
+                }
+                tr.appendChild(td);
+            }
+            if (showArchCol) tr.appendChild(mkTd('col-arch',   row.archetype, null, row.deck_url));
+            { const td = mkTd(row.round_pending ? 'col-record pending' : 'col-record', row.round_pending ? `${row.record}*` : row.record); attachTooltip(td, row.pid, false); tr.appendChild(td); }
+            tr.appendChild(mkTd('col-points', row.points));
+            if (hasLimitedRounds) {
+                { const td = mkTd('col-record', row.constructed_record); attachTooltip(td, row.pid, true); tr.appendChild(td); }
+                tr.appendChild(mkTd('col-points', row.constructed_points));
+            }
+
+            if (colVisible['omw']) {
+                const v = fmtTb(row.omw);
+                tr.appendChild(v ? mkTd('col-tb', v) : mkTd('col-na', '—'));
+            }
+            if (colVisible['gw']) {
+                const v = fmtTb(row.gw);
+                tr.appendChild(v ? mkTd('col-tb', v) : mkTd('col-na', '—'));
+            }
+            if (colVisible['ogw']) {
+                const v = fmtTb(row.ogw);
+                tr.appendChild(v ? mkTd('col-tb', v) : mkTd('col-na', '—'));
+            }
+            if (colVisible['range'] && hasSimData) {
+                if (row.rank_best != null) {
+                    tr.appendChild(mkTd(row.rank_best === row.rank_worst ? 'col-range exact' : 'col-range', row.rank_best === row.rank_worst ? `${row.rank_best}` : `${row.rank_best}–${row.rank_worst}`));
+                } else {
+                    tr.appendChild(mkTd('col-na', '—'));
+                }
+            }
+            for (const col of availProbCols) {
+                if (!colVisible[col.key]) continue;
+                const p = row[col.key];
+                if (p == null) {
+                    tr.appendChild(mkTd('col-na', '—'));
+                } else {
+                    tr.appendChild(mkTd('col-prob', fmtPct(p), {
+                        backgroundColor: probBgColor(p),
+                        color: probTextColor(p),
+                    }));
+                }
+            }
+
+            tbody.appendChild(tr);
+        }
+
+        table.appendChild(tbody);
+
+        const container = document.getElementById('table-container');
+        container.innerHTML = '';
+        container.appendChild(table);
+
+        const hasPending = visible.some(r => r.round_pending);
+        document.getElementById('round-pending-note').style.display = hasPending ? '' : 'none';
+    }
+
+    </script>
+</body>
+</html>

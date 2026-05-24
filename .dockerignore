@@ -1,0 +1,7 @@
+*
+!Dockerfile
+!mtgparse
+!update_loop.sh
+!requirements.txt
+!manifest.yaml
+!calc_ranks.go

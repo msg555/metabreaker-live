@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meta Breaker Live!</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f2f5;
+            color: #222;
+            padding: 24px;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: #1a1a2e;
+        }
+
+        h2 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 16px;
+        }
+
+        section { margin-bottom: 32px; }
+
+        .tourn-table {
+            border-collapse: separate;
+            border-spacing: 0;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            font-size: 0.88rem;
+        }
+
+        .tourn-table th, .tourn-table td {
+            padding: 10px 16px;
+            border-bottom: 1px solid #e8e8e8;
+            white-space: nowrap;
+        }
+
+        .tourn-table tbody tr:last-child td { border-bottom: none; }
+
+        .tourn-table thead th {
+            background: #1e3a5f;
+            color: white;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        .tourn-table thead th:first-child { border-top-left-radius: 10px; }
+        .tourn-table thead th:last-child  { border-top-right-radius: 10px; }
+        .tourn-table tbody tr:last-child td:first-child { border-bottom-left-radius: 10px; }
+        .tourn-table tbody tr:last-child td:last-child  { border-bottom-right-radius: 10px; }
+
+        .tourn-table tbody tr:hover td { background: #f0f7ff; }
+
+        .tourn-table td.col-title { font-weight: 600; }
+
+        .badge {
+            font-size: 0.70rem;
+            font-weight: 600;
+            padding: 2px 7px;
+            border-radius: 4px;
+            background: #e8f0fe;
+            color: #1a56c4;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .tourn-table td a {
+            color: #1a73e8;
+            text-decoration: none;
+        }
+
+        .tourn-table td a:hover { text-decoration: underline; }
+
+        .static-links {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .static-links a {
+            font-size: 0.88rem;
+            color: #1a73e8;
+            text-decoration: none;
+        }
+
+        .static-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>Meta Breaker Live!</h1>
+    <section>
+        <h2>Active Contests</h2>
+        
+    <table class="tourn-table">
+        <thead>
+            <tr>
+                <th>Tournament</th>
+                <th>Format</th>
+                
+                <th>Leaderboard</th>
+                <th>Matchups</th>
+                <th>Deck Clustering</th>
+                
+                <th>Data Source</th>
+                <th>Start Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-title">CAMS RC Mexico City 2026</td>
+                <td><span class="badge">standard</span></td>
+                
+                <td><a href="leaderboard.html?id=rcmexicocity2026">Leaderboard</a></td>
+                <td><a href="arch_matchup.html?id=rcmexicocity2026">Matchups</a></td>
+                <td><a href="embeddings-rcmexicocity2026.html">Deck Clustering</a></td>
+                
+                <td><a href="https://melee.gg/Tournament/View/411894" target="_blank" rel="noopener noreferrer">Data Source</a></td>
+                <td><time class="local-date" datetime="2026-05-23T16:00:00+00:00">2026-05-23</time></td>
+            </tr>
+            <tr>
+                <td class="col-title">SEA RC Kuala Lumpur 2026</td>
+                <td><span class="badge">standard</span></td>
+                
+                <td><a href="leaderboard.html?id=rckualalumpur2026">Leaderboard</a></td>
+                <td><a href="arch_matchup.html?id=rckualalumpur2026">Matchups</a></td>
+                <td><a href="embeddings-rckualalumpur2026.html">Deck Clustering</a></td>
+                
+                <td><a href="https://melee.gg/Tournament/View/427421" target="_blank" rel="noopener noreferrer">Data Source</a></td>
+                <td><time class="local-date" datetime="2026-05-23T01:00:00+00:00">2026-05-23</time></td>
+            </tr>
+            <tr>
+                <td class="col-title">ANZ Super Series Adelaide 2026</td>
+                <td><span class="badge">standard</span></td>
+                
+                <td><a href="leaderboard.html?id=anzssadelaide2026">Leaderboard</a></td>
+                <td><a href="arch_matchup.html?id=anzssadelaide2026">Matchups</a></td>
+                <td><a href="embeddings-anzssadelaide2026.html">Deck Clustering</a></td>
+                
+                <td><a href="https://melee.gg/Tournament/View/379086" target="_blank" rel="noopener noreferrer">Data Source</a></td>
+                <td><time class="local-date" datetime="2026-05-22T00:00:00+00:00">2026-05-22</time></td>
+            </tr>
+        </tbody>
+    </table>
+    </section>
+    <section>
+        <h2>Upcoming Contests</h2>
+        
+    <table class="tourn-table">
+        <thead>
+            <tr>
+                <th>Tournament</th>
+                <th>Format</th>
+                
+                <th>Data Source</th>
+                <th>Start Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-title">RC Prague 2026</td>
+                <td><span class="badge">standard</span></td>
+                
+                <td><a href="https://melee.gg/Tournament/View/424913" target="_blank" rel="noopener noreferrer">Data Source</a></td>
+                <td><time class="local-date" datetime="2026-05-30T07:00:00+00:00">2026-05-30</time></td>
+            </tr>
+        </tbody>
+    </table>
+    </section>
+    <section>
+        <h2>Past Contests</h2>
+        
+    <table class="tourn-table">
+        <thead>
+            <tr>
+                <th>Tournament</th>
+                <th>Format</th>
+                
+                <th>Leaderboard</th>
+                <th>Matchups</th>
+                <th>Deck Clustering</th>
+                
+                <th>Data Source</th>
+                <th>Start Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-title">RC Cincinnati 2026</td>
+                <td><span class="badge">standard</span></td>
+                
+                <td><a href="leaderboard.html?id=rccincinnati2026">Leaderboard</a></td>
+                <td><a href="arch_matchup.html?id=rccincinnati2026">Matchups</a></td>
+                <td><a href="embeddings-rccincinnati2026.html">Deck Clustering</a></td>
+                
+                <td><a href="https://melee.gg/Tournament/View/370745" target="_blank" rel="noopener noreferrer">Data Source</a></td>
+                <td><time class="local-date" datetime="2026-05-16T13:00:00+00:00">2026-05-16</time></td>
+            </tr>
+            <tr>
+                <td class="col-title">RC Ottawa 2026</td>
+                <td><span class="badge">standard</span></td>
+                
+                <td><a href="leaderboard.html?id=rcottawa2026">Leaderboard</a></td>
+                <td><a href="arch_matchup.html?id=rcottawa2026">Matchups</a></td>
+                <td><a href="embeddings-rcottawa2026.html">Deck Clustering</a></td>
+                
+                <td><a href="https://melee.gg/Tournament/View/416522" target="_blank" rel="noopener noreferrer">Data Source</a></td>
+                <td><time class="local-date" datetime="2026-05-16T13:00:00+00:00">2026-05-16</time></td>
+            </tr>
+            <tr>
+                <td class="col-title">RC São Paulo 2026</td>
+                <td><span class="badge">standard</span></td>
+                
+                <td><a href="leaderboard.html?id=rcsaopaulo2026">Leaderboard</a></td>
+                <td><a href="arch_matchup.html?id=rcsaopaulo2026">Matchups</a></td>
+                <td><a href="embeddings-rcsaopaulo2026.html">Deck Clustering</a></td>
+                
+                <td><a href="https://melee.gg/Tournament/View/425324" target="_blank" rel="noopener noreferrer">Data Source</a></td>
+                <td><time class="local-date" datetime="2026-05-16T12:00:00+00:00">2026-05-16</time></td>
+            </tr>
+            <tr>
+                <td class="col-title">Spotlight Series: Secrets</td>
+                <td><span class="badge">standard</span></td>
+                
+                <td><a href="leaderboard.html?id=spotlightsos">Leaderboard</a></td>
+                <td><a href="arch_matchup.html?id=spotlightsos">Matchups</a></td>
+                <td><a href="embeddings-spotlightsos.html">Deck Clustering</a></td>
+                
+                <td><a href="https://melee.gg/Tournament/View/424273" target="_blank" rel="noopener noreferrer">Data Source</a></td>
+                <td><time class="local-date" datetime="2026-05-09T08:00:00+00:00">2026-05-09</time></td>
+            </tr>
+            <tr>
+                <td class="col-title">Pro Tour Secrets of Strixhaven</td>
+                <td><span class="badge">standard</span></td>
+                
+                <td><a href="leaderboard.html?id=ptsos">Leaderboard</a></td>
+                <td><a href="arch_matchup.html?id=ptsos">Matchups</a></td>
+                <td><a href="embeddings-ptsos.html">Deck Clustering</a></td>
+                
+                <td><a href="https://melee.gg/Tournament/View/415628" target="_blank" rel="noopener noreferrer">Data Source</a></td>
+                <td><time class="local-date" datetime="2026-05-01T16:00:00+00:00">2026-05-01</time></td>
+            </tr>
+            <tr>
+                <td class="col-title">LDXP SEA26 Modern 10k - 8 slot RCQ</td>
+                <td><span class="badge">modern</span></td>
+                
+                <td><a href="leaderboard.html?id=ldxp-sea26-8slotrcq">Leaderboard</a></td>
+                <td><a href="arch_matchup.html?id=ldxp-sea26-8slotrcq">Matchups</a></td>
+                <td><a href="embeddings-ldxp-sea26-8slotrcq.html">Deck Clustering</a></td>
+                
+                <td><a href="https://melee.gg/Tournament/View/402502" target="_blank" rel="noopener noreferrer">Data Source</a></td>
+                <td><time class="local-date" datetime="2026-03-28T16:00:00+00:00">2026-03-28</time></td>
+            </tr>
+            <tr>
+                <td class="col-title">Paupergeddon Spring 2026</td>
+                <td><span class="badge">pauper</span></td>
+                
+                <td><a href="leaderboard.html?id=paupergeddon-spring-2026">Leaderboard</a></td>
+                <td><a href="arch_matchup.html?id=paupergeddon-spring-2026">Matchups</a></td>
+                <td><a href="embeddings-paupergeddon-spring-2026.html">Deck Clustering</a></td>
+                
+                <td><a href="https://melee.gg/Tournament/View/412125" target="_blank" rel="noopener noreferrer">Data Source</a></td>
+                <td><time class="local-date" datetime="2026-03-21T08:30:00+00:00">2026-03-21</time></td>
+            </tr>
+            <tr>
+                <td class="col-title">SEA Championship 2026</td>
+                <td><span class="badge">standard</span></td>
+                
+                <td><a href="leaderboard.html?id=seachampfinal2026r2">Leaderboard</a></td>
+                <td><a href="arch_matchup.html?id=seachampfinal2026r2">Matchups</a></td>
+                <td><a href="embeddings-seachampfinal2026r2.html">Deck Clustering</a></td>
+                
+                <td><a href="https://melee.gg/Tournament/View/408810" target="_blank" rel="noopener noreferrer">Data Source</a></td>
+                <td><time class="local-date" datetime="2026-03-14T02:00:00+00:00">2026-03-14</time></td>
+            </tr>
+            <tr>
+                <td class="col-title">RC Sydney 2026</td>
+                <td><span class="badge">standard</span></td>
+                
+                <td><a href="leaderboard.html?id=rcsydney2026">Leaderboard</a></td>
+                <td><a href="arch_matchup.html?id=rcsydney2026">Matchups</a></td>
+                <td><a href="embeddings-rcsydney2026.html">Deck Clustering</a></td>
+                
+                <td><a href="https://melee.gg/Tournament/View/341156" target="_blank" rel="noopener noreferrer">Data Source</a></td>
+                <td><time class="local-date" datetime="2026-03-13T22:30:00+00:00">2026-03-13</time></td>
+            </tr>
+            <tr>
+                <td class="col-title">Spotlight: TMNT</td>
+                <td><span class="badge">standard</span></td>
+                
+                <td><a href="leaderboard.html?id=spotlight-tmnt">Leaderboard</a></td>
+                <td><a href="arch_matchup.html?id=spotlight-tmnt">Matchups</a></td>
+                <td><a href="embeddings-spotlight-tmnt.html">Deck Clustering</a></td>
+                
+                <td><a href="https://melee.gg/Tournament/View/385921" target="_blank" rel="noopener noreferrer">Data Source</a></td>
+                <td><time class="local-date" datetime="2026-03-07T14:00:00+00:00">2026-03-07</time></td>
+            </tr>
+            <tr>
+                <td class="col-title">RC Turin 2026</td>
+                <td><span class="badge">standard</span></td>
+                
+                <td><a href="leaderboard.html?id=rcturin2026">Leaderboard</a></td>
+                <td><a href="arch_matchup.html?id=rcturin2026">Matchups</a></td>
+                <td><a href="embeddings-rcturin2026.html">Deck Clustering</a></td>
+                
+                <td><a href="https://melee.gg/Tournament/View/392336" target="_blank" rel="noopener noreferrer">Data Source</a></td>
+                <td><time class="local-date" datetime="2026-03-07T08:00:00+00:00">2026-03-07</time></td>
+            </tr>
+            <tr>
+                <td class="col-title">RC Milwaukee 2026</td>
+                <td><span class="badge">standard</span></td>
+                
+                <td><a href="leaderboard.html?id=rcmilwaukee2026">Leaderboard</a></td>
+                <td><a href="arch_matchup.html?id=rcmilwaukee2026">Matchups</a></td>
+                <td><a href="embeddings-rcmilwaukee2026.html">Deck Clustering</a></td>
+                
+                <td><a href="https://melee.gg/Tournament/View/339227" target="_blank" rel="noopener noreferrer">Data Source</a></td>
+                <td><time class="local-date" datetime="2026-02-21T15:00:00+00:00">2026-02-21</time></td>
+            </tr>
+            <tr>
+                <td class="col-title">RC Santiago 2026</td>
+                <td><span class="badge">standard</span></td>
+                
+                <td><a href="leaderboard.html?id=rcsantiago2026">Leaderboard</a></td>
+                <td><a href="arch_matchup.html?id=rcsantiago2026">Matchups</a></td>
+                <td><a href="embeddings-rcsantiago2026.html">Deck Clustering</a></td>
+                
+                <td><a href="https://melee.gg/Tournament/View/401688" target="_blank" rel="noopener noreferrer">Data Source</a></td>
+                <td><time class="local-date" datetime="2026-02-14T12:00:00+00:00">2026-02-14</time></td>
+            </tr>
+            <tr>
+                <td class="col-title">Pro Tour Lorwyn</td>
+                <td><span class="badge">standard</span></td>
+                
+                <td><a href="leaderboard.html?id=ptlorwyn">Leaderboard</a></td>
+                <td><a href="arch_matchup.html?id=ptlorwyn">Matchups</a></td>
+                <td><a href="embeddings-ptlorwyn.html">Deck Clustering</a></td>
+                
+                <td><a href="https://melee.gg/Tournament/View/394299" target="_blank" rel="noopener noreferrer">Data Source</a></td>
+                <td><time class="local-date" datetime="2026-01-30T14:00:00+00:00">2026-01-30</time></td>
+            </tr>
+            <tr>
+                <td class="col-title">RC Portland 2026</td>
+                <td><span class="badge">standard</span></td>
+                
+                <td><a href="leaderboard.html?id=rcportland2026">Leaderboard</a></td>
+                <td><a href="arch_matchup.html?id=rcportland2026">Matchups</a></td>
+                <td><a href="embeddings-rcportland2026.html">Deck Clustering</a></td>
+                
+                <td><a href="https://melee.gg/Tournament/View/331949" target="_blank" rel="noopener noreferrer">Data Source</a></td>
+                <td><time class="local-date" datetime="2026-01-24T17:00:00+00:00">2026-01-24</time></td>
+            </tr>
+        </tbody>
+    </table>
+    </section>
+
+    <section>
+        <h2>Tools</h2>
+        <div class="static-links">
+            <a href="rank_calculator.html">Rank Calculator</a>
+        </div>
+    </section>
+    <script>
+    for (const el of document.querySelectorAll('time.local-date')) {
+        const d = new Date(el.getAttribute('datetime'));
+        el.textContent = d.toLocaleString(undefined, { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true, timeZoneName: 'short' });
+    }
+    </script>
+</body>
+</html>

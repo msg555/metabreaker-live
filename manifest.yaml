@@ -1,0 +1,211 @@
+rcprague2026:
+  type: melee
+  melee_id: 424913
+  title: RC Prague 2026
+  format: standard
+  top_cut_rounds: 3
+  required_points:
+    8: 18
+  active: true
+
+anzssadelaide2026:
+  type: melee
+  melee_id: 379086
+  title: ANZ Super Series Adelaide 2026
+  format: standard
+  top_cut_rounds: 3
+  required_points: {}
+  active: true
+
+rckualalumpur2026:
+  type: melee
+  melee_id: 427421
+  title: SEA RC Kuala Lumpur 2026
+  format: standard
+  top_cut_rounds: 3
+  required_points: {}
+  active: true
+
+rcmexicocity2026:
+  type: melee
+  melee_id: 411894
+  title: CAMS RC Mexico City 2026
+  format: standard
+  top_cut_rounds: 3
+  required_points: {}
+  active: true
+
+rcsaopaulo2026:
+  type: melee
+  melee_id: 425324
+  title: RC São Paulo 2026
+  format: standard
+  top_cut_rounds: 3
+  required_points: {}
+
+rcottawa2026:
+  type: melee
+  melee_id: 416522
+  title: RC Ottawa 2026
+  format: standard
+  top_cut_rounds: 3
+  required_points:
+    9: 18
+
+rccincinnati2026:
+  type: melee
+  melee_id: 370745
+  title: RC Cincinnati 2026
+  format: standard
+  top_cut_rounds: 3
+  required_points:
+    9: 18
+
+spotlightsos:
+  type: melee
+  melee_id: 424273
+  title: "Spotlight Series: Secrets"
+  format: standard
+  top_cut_rounds: 3
+  required_points:
+    9: 18
+  active: false
+  override_results:
+    17:
+    - p1: "4039203" # Koen de Vos
+      p2: "4053471" # StannersPOTUS
+      games: [2, 0, 0]
+      complete: true
+
+ptsos:
+  type: melee
+  melee_id: 415628
+  title: Pro Tour Secrets of Strixhaven
+  format: standard
+  top_cut_rounds: 3
+  limited_rounds: [0, 1, 2, 8, 9, 10]
+  required_points:
+    8: 12
+  override_results:
+    16:
+    - p1: "3977487" # cftsoc
+      p2: "3977510" # Zevin
+      games: [3, 2, 0]
+      complete: true
+    - p1: "3977464" # Matt Nass
+      p2: "4003087" # Matthew Stefans
+      games: [3, 2, 0]
+      complete: true
+    - p1: "4021865" # Nathan Steuer
+      p2: "3977495" # Stafan Schutz
+      games: [3, 0, 0]
+      complete: true
+    - p1: "3977410" # Chris Larsen
+      p2: "3977470" # Maxx Kominowski
+      games: [3, 1, 0]
+      complete: true
+    17:
+    - p1: "3977410" # Chris Larsen
+      p2: "3977487" # cftsoc
+      games: [3, 1, 0]
+      complete: true
+    - p1: "4021865" # Nathan Steuer
+      p2: "3977464" # Matt Nass
+      games: [3, 2, 0]
+      complete: true
+    18:
+    - p1: "4021865" # Nathan Steuer
+      p2: "3977410" # Chris Larsen
+      games: [3, 2, 0]
+      complete: true
+
+ldxp-sea26-8slotrcq:
+  type: melee
+  melee_id: 402502
+  title: LDXP SEA26 Modern 10k - 8 slot RCQ
+  format: modern
+  top_cut_rounds: 3
+  required_points:
+    8: 18
+
+paupergeddon-spring-2026:
+  type: melee
+  melee_id: 412125
+  title: Paupergeddon Spring 2026
+  format: pauper
+  auto_label:
+    format_markdown: arch_descriptions/pauper.md
+  top_cut_rounds: 3
+  required_points:
+    8: 18
+
+seachampfinal2026r2:
+  type: melee
+  melee_id: 408810
+  title: SEA Championship 2026
+  format: standard
+  top_cut_rounds: 3
+  required_points: {}
+
+rcsydney2026:
+  type: melee
+  melee_id: 341156
+  title: RC Sydney 2026
+  format: standard
+  top_cut_rounds: 3
+  required_points: {}
+
+spotlight-tmnt:
+  type: melee
+  melee_id: 385921
+  title: "Spotlight: TMNT"
+  format: standard
+  top_cut_rounds: 3
+  required_points:
+    9: 18
+
+rcturin2026:
+  type: melee
+  melee_id: 392336
+  title: RC Turin 2026
+  format: standard
+  top_cut_rounds: 3
+  required_points:
+    9: 18
+
+ptlorwyn:
+  type: melee
+  melee_id: 394299
+  title: Pro Tour Lorwyn
+  format: standard
+  top_cut_rounds: 3
+  limited_rounds: [0, 1, 2, 8, 9, 10]
+  required_points:
+    8: 12
+
+rcmilwaukee2026:
+  type: melee
+  melee_id: 339227
+  title: RC Milwaukee 2026
+  format: standard
+  top_cut_rounds: 3
+  required_points:
+    9: 18
+
+rcportland2026:
+  type: melee
+  melee_id: 331949
+  title: RC Portland 2026
+  format: standard
+  top_cut_rounds: 3
+  required_points:
+    9: 18
+
+rcsantiago2026:
+  type: melee
+  melee_id: 401688
+  title: RC Santiago 2026
+  format: standard
+  top_cut_rounds: 3
+  required_points:
+    9: 18
