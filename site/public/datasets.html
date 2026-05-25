@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datasets &middot; Meta Breaker Live!</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f2f5;
+            color: #222;
+            padding: 24px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #1a1a2e;
+        }
+
+        h2 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin: 0 0 12px;
+        }
+
+        h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin: 18px 0 8px;
+        }
+
+        p { line-height: 1.5; margin-bottom: 10px; }
+
+        a { color: #1a73e8; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        .nav-back {
+            display: inline-block;
+            font-size: 0.85rem;
+            margin-bottom: 16px;
+            color: #1a73e8;
+        }
+
+        section {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 18px 22px;
+            margin-bottom: 24px;
+        }
+
+        code, pre {
+            font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+            font-size: 0.85rem;
+        }
+
+        code {
+            background: #f1f3f5;
+            padding: 1px 5px;
+            border-radius: 4px;
+        }
+
+        pre {
+            background: #1a1a2e;
+            color: #e8e8f0;
+            padding: 14px 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            line-height: 1.45;
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            color: inherit;
+            font-size: inherit;
+        }
+
+        .endpoint {
+            background: #f1f3f5;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+            font-size: 0.9rem;
+            margin: 8px 0 12px;
+            display: inline-block;
+        }
+
+        table.fields {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+            margin: 8px 0 4px;
+        }
+
+        table.fields th, table.fields td {
+            text-align: left;
+            padding: 8px 12px;
+            border-bottom: 1px solid #eaecef;
+            vertical-align: top;
+        }
+
+        table.fields thead th {
+            background: #f6f8fa;
+            font-weight: 600;
+            border-bottom: 1px solid #d1d5da;
+        }
+
+        table.fields td.field { font-weight: 600; white-space: nowrap; }
+        table.fields td.type {
+            font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+            font-size: 0.82rem;
+            color: #555;
+            white-space: nowrap;
+        }
+        table.fields td.flag {
+            font-size: 0.75rem;
+            color: #888;
+            white-space: nowrap;
+        }
+        table.fields td.flag.req { color: #c53030; font-weight: 600; }
+        table.fields td.desc { line-height: 1.45; }
+        table.fields td.desc code { font-size: 0.8rem; }
+
+        details {
+            background: #f6f8fa;
+            border-radius: 6px;
+            padding: 8px 14px;
+        }
+
+        details summary {
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 4px 0;
+        }
+
+        details[open] summary { margin-bottom: 10px; }
+
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .layout { grid-template-columns: 1fr; }
+        }
+
+        .type-block { scroll-margin-top: 14px; }
+
+        .anchor {
+            color: #999;
+            text-decoration: none;
+            font-weight: 400;
+            margin-left: 6px;
+            font-size: 0.85em;
+        }
+        .anchor:hover { color: #1a73e8; }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="nav-back">&larr; Back to Meta Breaker Live</a>
+    <h1>Tournament Dataset Format</h1>
+    <p style="color:#555; font-size:0.92rem; margin-bottom:24px;">
+        Every tournament on this site is backed by a single JSON file containing its players, decklists, and round-by-round match results. The same data drives the leaderboards, matchup tables, and deck clustering pages.
+    </p>
+
+    <section>
+        <h2>Where to get the data</h2>
+        <p>Each tournament's dataset is served from a stable URL:</p>
+        <div class="endpoint">https://metabreaker.live/data/&lt;tournament-id&gt;.json</div>
+        <p>
+            Tournament IDs are listed in the <strong>Download</strong> column on the
+            <a href="index.html">home page</a> &mdash; each link points directly at the JSON for that event.
+            Files update as rounds are played.
+        </p>
+    </section>
+
+    <section>
+        <h2>Example</h2>
+        <p>A minimal tournament with two players and one completed round looks like this:</p>
+<pre><code>{
+  "title": "Example RC 2026",
+  "source_url": "https://melee.gg/Tournament/View/000000",
+  "start_date": "2026-01-01T16:00:00+00:00",
+  "players": {
+    "1001": {
+      "ident": "1001",
+      "name": "Alice",
+      "url": "https://melee.gg/Profile/Index/1001",
+      "deck": {
+        "archetype": "Mono-Red Aggro",
+        "author": null,
+        "url": null,
+        "main_deck": [
+          { "name": "Monastery Swiftspear", "count": 4 },
+          { "name": "Mountain", "count": 20 }
+        ],
+        "side_board": [
+          { "name": "Roiling Vortex", "count": 2 }
+        ]
+      }
+    },
+    "1002": {
+      "ident": "1002",
+      "name": "Bob",
+      "url": null,
+      "deck": {
+        "archetype": "Esper Control",
+        "author": null,
+        "url": null,
+        "main_deck": [
+          { "name": "Counterspell", "count": 4 }
+        ],
+        "side_board": []
+      }
+    }
+  },
+  "round_results": [
+    [
+      { "p1": "1001", "p2": "1002", "games": [2, 1, 0], "complete": true }
+    ]
+  ]
+}</code></pre>
+        <p style="font-size:0.85rem; color:#666;">
+            A simple tournament where Alice won the only match 2-1.
+        </p>
+    </section>
+
+    <section>
+        <h2>Schema</h2>
+        <p>
+            The tables below describe each object in the dataset. A formal
+            <a href="tournament.schema.json">JSON Schema</a> is available for use with validators and code generators.
+        </p>
+
+        <div class="type-block">
+            <h3 id="tournament">Tournament (top level) <a class="anchor" href="#tournament">#</a></h3>
+            <table class="fields">
+                <thead>
+                    <tr><th>Field</th><th>Type</th><th></th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="field">title</td>
+                        <td class="type">string</td>
+                        <td class="flag req">required</td>
+                        <td class="desc">Human readable tournament name. Empty string when not known.</td>
+                    </tr>
+                    <tr>
+                        <td class="field">source_url</td>
+                        <td class="type">string</td>
+                        <td class="flag req">required</td>
+                        <td class="desc">URL of the original tournament listing (e.g. melee.gg) that this data was scraped from. Empty string when not known.</td>
+                    </tr>
+                    <tr>
+                        <td class="field">start_date</td>
+                        <td class="type">string</td>
+                        <td class="flag req">required</td>
+                        <td class="desc">ISO 8601 start date/time of the tournament. Empty string when not known.</td>
+                    </tr>
+                    <tr>
+                        <td class="field">limited_rounds</td>
+                        <td class="type">integer[]</td>
+                        <td class="flag req">required</td>
+                        <td class="desc">0-indexed round numbers played in a limited (drafted) format for mixed limited-constructed tournaments. Empty list if there are no limited rounds.</td>
+                    </tr>
+                    <tr>
+                        <td class="field">required_points</td>
+                        <td class="type">{ string: integer }</td>
+                        <td class="flag req">required</td>
+                        <td class="desc">Match-point cutoffs. The key is the number of rounds played; the value is the minimum match points needed at that point to continue playing. e.g. <code>{ "9": 18 }</code> = need 18 points after 9 rounds. Empty when there is no cut.</td>
+                    </tr>
+                    <tr>
+                        <td class="field">top_cut_rounds</td>
+                        <td class="type">integer</td>
+                        <td class="flag req">required</td>
+                        <td class="desc">Number of single-elimination rounds at the end of the tournament. <code>3</code> = Top 8, <code>4</code> = Top 16, etc.</td>
+                    </tr>
+                    <tr>
+                        <td class="field">players</td>
+                        <td class="type">{ string: <a href="#player">Player</a> }</td>
+                        <td class="flag req">required</td>
+                        <td class="desc">Map from a player's <code>ident</code> to their record.</td>
+                    </tr>
+                    <tr>
+                        <td class="field">round_results</td>
+                        <td class="type"><a href="#matchresult">MatchResult</a>[][]</td>
+                        <td class="flag req">required</td>
+                        <td class="desc">Round-by-round results. For in progress tournaments the length of this array should always be the total number of rounds in the tournament. Rounds that have not started will have an empty MatchResult array associated with them.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="type-block">
+            <h3 id="player">Player <a class="anchor" href="#player">#</a></h3>
+            <table class="fields">
+                <thead>
+                    <tr><th>Field</th><th>Type</th><th></th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="field">ident</td>
+                        <td class="type">string</td>
+                        <td class="flag req">required</td>
+                        <td class="desc">Identifier for the player. Format depends on data source.</td>
+                    </tr>
+                    <tr>
+                        <td class="field">name</td>
+                        <td class="type">string</td>
+                        <td class="flag req">required</td>
+                        <td class="desc">Display name of the player.</td>
+                    </tr>
+                    <tr>
+                        <td class="field">url</td>
+                        <td class="type">string | null</td>
+                        <td class="flag">optional</td>
+                        <td class="desc">Profile URL of the player on the source platform, when available.</td>
+                    </tr>
+                    <tr>
+                        <td class="field">deck</td>
+                        <td class="type"><a href="#deck">Deck</a></td>
+                        <td class="flag req">required</td>
+                        <td class="desc">The decklist registered by this player.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="type-block">
+            <h3 id="deck">Deck <a class="anchor" href="#deck">#</a></h3>
+            <table class="fields">
+                <thead>
+                    <tr><th>Field</th><th>Type</th><th></th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="field">main_deck</td>
+                        <td class="type"><a href="#card">Card</a>[]</td>
+                        <td class="flag req">required</td>
+                        <td class="desc">Main deck cards</td>
+                    </tr>
+                    <tr>
+                        <td class="field">side_board</td>
+                        <td class="type"><a href="#card">Card</a>[]</td>
+                        <td class="flag req">required</td>
+                        <td class="desc">Sideboard cards.</td>
+                    </tr>
+                    <tr>
+                        <td class="field">archetype</td>
+                        <td class="type">string</td>
+                        <td class="flag req">required</td>
+                        <td class="desc">Archetype label for the deck. "unknown" when no archetype could be determined.</td>
+                    </tr>
+                    <tr>
+                        <td class="field">author</td>
+                        <td class="type">string | null</td>
+                        <td class="flag">optional</td>
+                        <td class="desc">Original deck author, if given.</td>
+                    </tr>
+                    <tr>
+                        <td class="field">url</td>
+                        <td class="type">string | null</td>
+                        <td class="flag">optional</td>
+                        <td class="desc">URL of the decklist on the source platform, when available.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="type-block">
+            <h3 id="card">Card <a class="anchor" href="#card">#</a></h3>
+            <table class="fields">
+                <thead>
+                    <tr><th>Field</th><th>Type</th><th></th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="field">name</td>
+                        <td class="type">string</td>
+                        <td class="flag req">required</td>
+                        <td class="desc">Card name (direct from data source, no normalizing has been done)</td>
+                    </tr>
+                    <tr>
+                        <td class="field">count</td>
+                        <td class="type">integer &ge; 1</td>
+                        <td class="flag req">required</td>
+                        <td class="desc">Number of copies of this card.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="type-block">
+            <h3 id="matchresult">MatchResult <a class="anchor" href="#matchresult">#</a></h3>
+            <table class="fields">
+                <thead>
+                    <tr><th>Field</th><th>Type</th><th></th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="field">p1</td>
+                        <td class="type">string</td>
+                        <td class="flag req">required</td>
+                        <td class="desc">Player id of the first player.</td>
+                    </tr>
+                    <tr>
+                        <td class="field">p2</td>
+                        <td class="type">string | null</td>
+                        <td class="flag req">required</td>
+                        <td class="desc">Player id of the second player. null for byes or forfeits.</td>
+                    </tr>
+                    <tr>
+                        <td class="field">games</td>
+                        <td class="type">[integer, integer, integer]</td>
+                        <td class="flag req">required</td>
+                        <td class="desc">Game scores as <code>[p1 wins, p2 wins, draws]</code>. For byes this is <code>[0, 0, 0]</code>. For forfeits this is <code>[0, 2, 0]</code>. Intentional draws are <code>[0, 0, 0]</code>. Match results are normalized so p1 is the winner (forfeits exempted).</td>
+                    </tr>
+                    <tr>
+                        <td class="field">complete</td>
+                        <td class="type">boolean</td>
+                        <td class="flag">optional, default <code>true</code></td>
+                        <td class="desc">False if the match is still in progress.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section>
+        <h2>Raw JSON Schema</h2>
+        <p>
+            For automated validation or code generation, download
+            <a href="tournament.schema.json"><code>tournament.schema.json</code></a>
+            (Draft 2020-12).
+        </p>
+        <details>
+            <summary>Show inline schema</summary>
+            <pre id="schema-pre"><code>Loading&hellip;</code></pre>
+        </details>
+    </section>
+
+    <script>
+    // Lazily fetch and pretty-print the schema when the user expands the details panel.
+    const details = document.querySelector('details');
+    const pre = document.getElementById('schema-pre');
+    let loaded = false;
+    details.addEventListener('toggle', async () => {
+        if (!details.open || loaded) return;
+        loaded = true;
+        try {
+            const r = await fetch('tournament.schema.json');
+            const t = await r.text();
+            pre.textContent = t;
+        } catch (e) {
+            pre.textContent = 'Failed to load schema: ' + e;
+            loaded = false;
+        }
+    });
+    </script>
+</body>
+</html>

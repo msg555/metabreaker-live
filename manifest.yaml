@@ -15,7 +15,6 @@ anzssadelaide2026:
   format: standard
   top_cut_rounds: 3
   required_points: {}
-  active: true
 
 rckualalumpur2026:
   type: melee
@@ -24,7 +23,6 @@ rckualalumpur2026:
   format: standard
   top_cut_rounds: 3
   required_points: {}
-  active: true
 
 rcmexicocity2026:
   type: melee
@@ -33,7 +31,6 @@ rcmexicocity2026:
   format: standard
   top_cut_rounds: 3
   required_points: {}
-  active: true
 
 rcsaopaulo2026:
   type: melee
@@ -69,7 +66,6 @@ spotlightsos:
   top_cut_rounds: 3
   required_points:
     9: 18
-  active: false
   override_results:
     17:
     - p1: "4039203" # Koen de Vos

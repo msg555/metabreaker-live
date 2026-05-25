@@ -124,6 +124,9 @@
                 <th>Deck Clustering</th>
                 {% endif %}
                 <th>Data Source</th>
+                {% if category != 'upcoming' %}
+                <th>Download</th>
+                {% endif %}
                 <th>Start Date</th>
             </tr>
         </thead>
@@ -141,6 +144,9 @@
                 <td>{% if id in has_embeddings %}<a href="embeddings-{{ id }}.html">Deck Clustering</a>{% endif %}</td>
                 {% endif %}
                 <td>{% if meta.get_url() %}<a href="{{ meta.get_url() }}" target="_blank" rel="noopener noreferrer">Data Source</a>{% endif %}</td>
+                {% if category != 'upcoming' %}
+                <td>{% if id in has_any_data %}<a href="/data/{{ id }}.json" download>JSON</a>{% endif %}</td>
+                {% endif %}
                 <td><time class="local-date" datetime="{{ meta.start_date.isoformat() }}">{{ meta.start_date.strftime('%Y-%m-%d') }}</time></td>
             </tr>
             {%- endif %}
@@ -174,6 +180,7 @@
         <h2>Tools</h2>
         <div class="static-links">
             <a href="rank_calculator.html">Rank Calculator</a>
+            <a href="datasets.html">Dataset Format &amp; Downloads</a>
         </div>
     </section>
     <script>

@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://metabreaker.live/tournament.schema.json",
+  "title": "MetaBreaker Tournament",
+  "description": "A single tournament dataset as served from https://metabreaker.live/data/<id>.json. Contains tournament metadata, every entered player and their decklist, and the match results of every round.",
+  "type": "object",
+  "required": ["players", "round_results"],
+  "additionalProperties": false,
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Human readable tournament name."
+    },
+    "source_url": {
+      "type": "string",
+      "description": "URL of the original tournament listing (e.g. a melee.gg URL) that the data was scraped from. Empty string if not known."
+    },
+    "start_date": {
+      "type": "string",
+      "description": "ISO 8601 start date/time of the tournament. Empty string if not known."
+    },
+    "limited_rounds": {
+      "type": "array",
+      "description": "0-indexed round numbers played in a limited (drafted) format. Rounds not listed here are constructed. Empty for fully constructed tournaments.",
+      "items": { "type": "integer", "minimum": 0 }
+    },
+    "required_points": {
+      "type": "object",
+      "description": "Map from rounds-played (key) to the minimum match points required to be paired into the next round. e.g. {\"9\": 18} means a player must have at least 18 match points after 9 rounds to continue. Empty when there is no point cut.",
+      "additionalProperties": { "type": "integer", "minimum": 0 }
+    },
+    "top_cut_rounds": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of single-elimination rounds at the end of the tournament. 3 = Top 8, 4 = Top 16, etc."
+    },
+    "players": {
+      "type": "object",
+      "description": "Map from player identifier (matches the id used by p1/p2 in round_results) to the player record.",
+      "additionalProperties": { "$ref": "#/$defs/Player" }
+    },
+    "round_results": {
+      "type": "array",
+      "description": "Round-by-round match results. Outer index is the 0-indexed round number; the inner array is the list of matches played that round. A round still in progress may be empty or partially populated.",
+      "items": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/MatchResult" }
+      }
+    }
+  },
+  "$defs": {
+    "Player": {
+      "type": "object",
+      "required": ["ident", "name", "deck"],
+      "additionalProperties": false,
+      "properties": {
+        "ident": {
+          "type": "string",
+          "description": "Stable identifier for the player within this tournament; this is the key used by p1/p2 in round_results."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name of the player."
+        },
+        "url": {
+          "type": ["string", "null"],
+          "description": "Profile URL of the player on the source platform, when available."
+        },
+        "deck": { "$ref": "#/$defs/Deck" }
+      }
+    },
+    "Deck": {
+      "type": "object",
+      "required": ["main_deck", "side_board"],
+      "additionalProperties": false,
+      "properties": {
+        "main_deck": {
+          "type": "array",
+          "description": "Main deck. Cards may be repeated across entries; sum counts to get the total per card.",
+          "items": { "$ref": "#/$defs/Card" }
+        },
+        "side_board": {
+          "type": "array",
+          "description": "Sideboard.",
+          "items": { "$ref": "#/$defs/Card" }
+        },
+        "archetype": {
+          "type": "string",
+          "default": "unknown",
+          "description": "Archetype label assigned by MetaBreaker's clustering/labelling pipeline. \"unknown\" if no label has been assigned."
+        },
+        "author": {
+          "type": ["string", "null"],
+          "description": "Original deck author, if different from the player (rarely used)."
+        },
+        "url": {
+          "type": ["string", "null"],
+          "description": "URL of the decklist on the source platform, when available."
+        }
+      }
+    },
+    "Card": {
+      "type": "object",
+      "required": ["name", "count"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Card name as printed on the source listing. Casing and punctuation are preserved as-is and have not been normalized to a canonical Scryfall name."
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Number of copies of this card."
+        }
+      }
+    },
+    "MatchResult": {
+      "type": "object",
+      "required": ["p1", "p2", "games"],
+      "additionalProperties": false,
+      "description": "A single match. For non-draws p1 is always the winner. For byes p2 is null.",
+      "properties": {
+        "p1": {
+          "type": "string",
+          "description": "Player id of the match winner. For draws this is one of the two participants. For byes this is the player receiving the bye."
+        },
+        "p2": {
+          "type": ["string", "null"],
+          "description": "Player id of the loser, or null when the match is a bye."
+        },
+        "games": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": { "type": "integer", "minimum": 0 },
+          "description": "Game scores as [p1 wins, p2 wins, draws]. For byes this is [0, 0, 0]."
+        },
+        "complete": {
+          "type": "boolean",
+          "default": true,
+          "description": "False if the match result is not yet finalized (e.g. the round is still in progress)."
+        }
+      }
+    }
+  }
+}
