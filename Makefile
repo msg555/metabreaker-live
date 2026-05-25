@@ -1,5 +1,5 @@
 deploy-site:
-	(cd site && wrangler pages deploy --project-name metabreaker-live --commit-dirty=false)
+	(cd site && wrangler pages deploy --commit-dirty=true --project-name metabreaker-live --branch main)
 
 sync-data:
 	aws s3 sync data s3://metabreaker-live-data \

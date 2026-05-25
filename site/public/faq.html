@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ &middot; Meta Breaker Live!</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f2f5;
+            color: #222;
+            padding: 24px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #1a1a2e;
+        }
+
+        h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin: 18px 0 8px;
+        }
+
+        p { line-height: 1.55; margin-bottom: 10px; }
+        ul, ol { margin: 4px 0 12px 22px; line-height: 1.55; }
+        li { margin-bottom: 4px; }
+
+        a { color: #1a73e8; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        .nav-back {
+            display: inline-block;
+            font-size: 0.85rem;
+            margin-bottom: 16px;
+            color: #1a73e8;
+        }
+
+        .intro {
+            color: #555;
+            font-size: 0.92rem;
+            margin-bottom: 24px;
+        }
+
+        details.qa {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            padding: 14px 20px;
+            margin-bottom: 12px;
+            transition: box-shadow 0.15s ease;
+        }
+
+        details.qa[open] {
+            box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+            padding-bottom: 20px;
+        }
+
+        details.qa > summary {
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.98rem;
+            color: #1a1a2e;
+            list-style: none;
+            padding: 4px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        details.qa > summary::-webkit-details-marker { display: none; }
+
+        details.qa > summary::before {
+            content: "+";
+            display: inline-block;
+            width: 16px;
+            text-align: center;
+            font-weight: 700;
+            color: #1a73e8;
+            flex-shrink: 0;
+        }
+
+        details.qa[open] > summary::before { content: "\2212"; }
+
+        details.qa[open] > summary { margin-bottom: 10px; border-bottom: 1px solid #eaecef; padding-bottom: 10px; }
+
+        details.qa .body { font-size: 0.92rem; }
+
+        code {
+            font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+            font-size: 0.85rem;
+            background: #f1f3f5;
+            padding: 1px 5px;
+            border-radius: 4px;
+        }
+
+        .formula {
+            background: #f6f8fa;
+            border-left: 3px solid #1e3a5f;
+            padding: 10px 14px;
+            margin: 8px 0 12px;
+            font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+            font-size: 0.88rem;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .note { font-size: 0.85rem; color: #666; margin-top: 8px; }
+
+        .stub {
+            background: #fff4e5;
+            border-left: 3px solid #f5a623;
+            padding: 8px 12px;
+            font-size: 0.82rem;
+            color: #6a4a00;
+            margin: 6px 0 12px;
+            border-radius: 0 6px 6px 0;
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="nav-back">&larr; Back to Meta Breaker Live</a>
+    <h1>Frequently Asked Questions</h1>
+    <p class="intro">
+        Background on how Meta Breaker Live processes tournament data, ranks players, labels decks, and projects
+        outcomes.
+    </p>
+
+    <details class="qa">
+        <summary>How does the Monte Carlo simulation work?</summary>
+        <div class="body">
+            <p>
+                While a tournament is in progress, Meta Breaker estimates each player's chances of finishing in any given position (e.g. top 8, Day 2, winning) by simulating the rest of the tournament thousands of times and counting outcomes.
+            </p>
+
+            <h3>Overview</h3>
+            <p>
+                The simulator starts from the tournament's <em>current</em> state: every completed round is taken as given, every player's standing is what it actually is. From there it plays out the remaining Swiss rounds and the entire top cut, then records where each player landed. This is repeated many times, and the published probabilities are simply the fraction of simulations in which each event occurred.
+            </p>
+            <p>Each simulation has two sources of randomness:</p>
+            <ul>
+                <li><strong>Match outcomes</strong> &mdash; who wins each individual game.</li>
+                <li><strong>Archetype strength</strong> &mdash; how favored each archetype actually is against each other, sampled once at the start of every simulation.</li>
+            </ul>
+
+            <h3>How many simulations are run?</h3>
+            <p>
+                Usually 5,000. That has been a good middle ground in terms of compute cost and result quality. However, even with 5,000 simulation rounds there can still be meaningful noise in the output; especially for rare outcomes.
+            </p>
+
+            <h3>Win probability</h3>
+            <p>
+                For constructed rounds when deck archetypes are known, win probability is estimated by looking at the history of the given match-up within this tournament. No external tournament data is considered and no player-specific considerations are made. If no archetype data is available the game win probability is taken as 50%.
+            </p>
+            <p>
+                Archetype game win rates are sampled at the start of each simulation based on game results so far. For a given matchup the win rate of archetype X over archetype Y will be sampled from <strong>Beta(8 + x, 8 + y)</strong> where 'x' is the number of games X beat Y and 'y' is the number of games Y beat X.
+            </p>
+            <p>
+                After determining the game win probability of each player the match is simulated by deciding games until one player has 2 wins. Ties never occur in the simulation.
+            </p>
+
+            <h3>Intentional draw simulation</h3>
+            <p>
+                Intentional draws are only simulated in the last round before a top cut. For this round two players will intentionally draw if no matter the outcome of any other match they will both make the top cut.
+            </p>
+            <p>
+                This logic makes two assumptions that may not always be right.  First, the logic assumes that the relative ordering of OMW% tie-breakers between players will not change. Due to the way the final round of swiss pairings works this is often the case but not always. Second, it assumes players wouldn't intentionally draw for any other reason. In some tournaments this is definitely not correct where two players may intentionally draw to lock up e.g. a top 32 rank.
+            </p>
+
+            <h3>What gets recorded</h3>
+            <p>After each simulation finishes, the per-player stats updated are:</p>
+            <ul>
+                <li><code>rank_best</code> / <code>rank_worst</code> &mdash; the best and worst final rank ever observed for the player.</li>
+                <li><code>top_1, top_2, top_4, &hellip; top_256</code> &mdash; fraction of simulations in which the player's final rank was strictly within the top <code>2<sup>i</sup></code>. <code>top_8</code> = top-8 conversion rate, <code>top_1</code> = win rate.</li>
+                <li><code>cutoff_&lt;points&gt;</code> &mdash; fraction of simulations in which the player ended Swiss with at least this many match points (one entry per <a href="datasets.html#tournament"><code>required_points</code></a> threshold).</li>
+            </ul>
+        </div>
+    </details>
+
+    <details class="qa">
+        <summary>Where does the tournament data come from?</summary>
+        <div class="body">
+            <p>
+                Mostly <a href="https://melee.gg" target="_blank" rel="noopener">melee.gg</a>.  The "Data Source" link in each row on the home page points at the original event page.
+            </p>
+            <p>
+                For Pro Tours the live data usually comes directly from <a href="https://magic.gg" target="_blank" rel="noopener">magic.gg</a> and eventually reverts to using Melee which usually has higher quality data once published.
+            </p>
+            <p>
+                While a tournament is active data is updated every 5 minutes, so leaderboards refresh as rounds are reported.
+            </p>
+        </div>
+    </details>
+
+    <details class="qa">
+        <summary>How are deck archetypes labeled?</summary>
+        <div class="body">
+            <p>
+                Deck labels usually come from the data source (e.g. Melee.gg).  For the occasional open decklist tournament that does not include deck labels a LLM is used to assign archetypes. The LLM is given a description of the common decks in the format and asked to categorize each deck. See <a href="leaderboard?id=paupergeddon-spring-2026">Paupergeddon Spring 2026</a> as an example of this technique.
+            </p>
+        </div>
+    </details>
+
+    <details class="qa">
+        <summary>How often does the data update?</summary>
+        <div class="body">
+            <p>
+                Data is updated approximately every <strong>5 minutes</strong> while a tournament is active. Network data can be further cached for up to 60 seconds, so worst case a refresh takes about 6 minutes to appear.
+            </p>
+        </div>
+    </details>
+
+    <details class="qa">
+        <summary>Can I download the raw dataset for a tournament?</summary>
+        <div class="body">
+            <p>
+                Yes. Every tournament's full JSON (players, decklists, every round result) is downloadable from the <strong>Download</strong> column on the <a href="index.html">home page</a>, or directly at <code>https://metabreaker.live/data/&lt;tournament-id&gt;.json</code>.
+            </p>
+            <p>
+                The file format is documented at <a href="datasets.html">Dataset Format &amp; Downloads</a>, including a formal <a href="tournament.schema.json">JSON Schema</a>.
+            </p>
+        </div>
+    </details>
+
+    <details class="qa">
+        <summary>Can you add Tournament XYZ?</summary>
+        <div class="body">
+            <p>
+                While a Magic enthusiast I'm not always the most plugged into the MtG tournament scene. If there is an active/upcoming major tournament (On Melee, RC level or more than 200 people) feel free to reach out at <a href="mailto:contact@metabreaker.live">contact@metabreaker.live</a>. No guarantees of a prompt addition, however.
+            </p>
+        </div>
+    </details>
+
+    <details class="qa">
+        <summary>Can I contribute?</summary>
+        <div class="body">
+            <p>
+                The project is <a href="https://github.com/msg555/metabreaker-live">OpenSource</a>. The project is still pretty new so I'm not intentionally trying to expand the contributor base. If you have something you really want to work on please contact me through GitHub.
+            </p>
+        </div>
+    </details>
+
+    <details class="qa">
+        <summary>What tech stack are you using?</summary>
+        <div class="body">
+            <p>
+                Meta Breaker Live relies on static html content delivered through <a href="https://pages.cloudflare.com/" target="_blank" rel="noopener">Cloudflare Pages</a> with datasets updated and delivered through <a href="https://www.cloudflare.com/products/r2/" target="_blank" rel="noopener">Cloudflare's R2</a> service. Datasets are updated using a tiny container deployed
+through <a href="https://fly.io" target="_blank" rel="noopener">fly.io</a>.
+            </p>
+            <p>
+                Claude Code was used to implement most of the front-end web UI you're looking at.
+            </p>
+        </div>
+    </details>
+
+</body>
+</html>
