@@ -1,3 +1,13 @@
+rcdc2026:
+  type: melee
+  melee_id: 374970
+  title: RC Washington 2026
+  format: standard
+  top_cut_rounds: 3
+  required_points:
+    9: 18
+  active: true
+
 rcprague2026:
   type: melee
   melee_id: 424913
