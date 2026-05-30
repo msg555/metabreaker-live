@@ -1,12 +1,15 @@
 FROM python:3.12-slim AS source_image
 
 # --------------------------------------------
-FROM source_image AS aws_installer
+FROM source_image AS with_curl
 
 RUN apt-get update && \
     apt-get install -y curl unzip && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
+
+# --------------------------------------------
+FROM with_curl AS aws_installer
 
 RUN mkdir /out \
  && cd /out \
@@ -14,6 +17,14 @@ RUN mkdir /out \
  && unzip awscliv2.zip \
  && rm awscliv2.zip
 
+# --------------------------------------------
+FROM with_curl AS node_installer
+
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
+
+RUN . /root/.nvm/nvm.sh \
+ && nvm install 24 \
+ && mv /usr/bin/versions/node/v24.* /out
 
 # --------------------------------------------
 FROM golang:1.24-alpine AS calc_ranks_builder
@@ -32,6 +43,10 @@ COPY --from=aws_installer /out/ /aws/
 
 RUN /aws/aws/install && rm -rf /aws
 
+COPY --from=node_installer /out/ /node
+ENV PATH="${PATH}:/node/bin"
+RUN npm install -g wrangler
+
 WORKDIR /work
 
 COPY requirements.txt ./
@@ -40,8 +55,9 @@ RUN pip install -r requirements.txt
 
 COPY --from=calc_ranks_builder /out/calc_ranks ./
 
-RUN mkdir -p cache data/ranks site/public/
+RUN mkdir -p cache data/ranks
 
+COPY site ./site
 COPY mtgparse ./mtgparse
 COPY update_loop.sh manifest.yaml ./
 
